@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @SpringBootApplication
 public class BrokerAppApplication {
@@ -14,8 +15,9 @@ public class BrokerAppApplication {
         SpringApplication.run(BrokerAppApplication.class, args);
     }
     @Bean
-    public CommandLineRunner saveCustomers(CustomerRepository customerRepository) {
+    public CommandLineRunner saveInitialData(CustomerRepository customerRepository, AssetRepository assetRepository) {
         return args -> {
+
             customerRepository.save(new Customer(
                     1L,
                     "Warren",
@@ -44,6 +46,80 @@ public class BrokerAppApplication {
                     "Livermore",
                     Collections.emptySet(),
                     Collections.emptySet()
+            ));
+
+            assetRepository.save(new Asset(
+                    1L,
+                    "TRY",
+                    43178.93f,
+                    29178.88f,
+                    customerRepository.findById(1L).get()
+            ));
+            assetRepository.save(new Asset(
+                    2L,
+                    "DOLLAR",
+                    203178.93f,
+                    129178.88f,
+                    customerRepository.findById(1L).get()
+            ));
+            assetRepository.save(new Asset(
+                    3L,
+                    "BITCOIN",
+                    100f,
+                    50f,
+                    customerRepository.findById(1L).get()
+            ));
+
+            assetRepository.save(new Asset(
+                    4L,
+                    "TRY",
+                    1000000.93f,
+                    78113.11f,
+                    customerRepository.findById(2L).get()
+            ));
+            assetRepository.save(new Asset(
+                    5L,
+                    "DOLLAR",
+                    203178.93f,
+                    129178.88f,
+                    customerRepository.findById(2L).get()
+            ));
+
+            assetRepository.save(new Asset(
+                    6L,
+                    "TRY",
+                    91000.22f,
+                    91000.22f,
+                    customerRepository.findById(3L).get()
+            ));
+            assetRepository.save(new Asset(
+                    7L,
+                    "ETHEREUM",
+                    2178.109f,
+                    1000.00f,
+                    customerRepository.findById(3L).get()
+            ));
+            assetRepository.save(new Asset(
+                    8L,
+                    "NVIDIA",
+                    50f,
+                    35f,
+                    customerRepository.findById(3L).get()
+            ));
+
+            assetRepository.save(new Asset(
+                    9L,
+                    "DOLLAR",
+                    4222178.109f,
+                    3000000.99f,
+                    customerRepository.findById(4L).get()
+            ));
+            assetRepository.save(new Asset(
+                    10L,
+                    "EURO",
+                    10000000f,
+                    350000f,
+                    customerRepository.findById(4L).get()
             ));
         };
     }
