@@ -1,9 +1,11 @@
 package com.ing.broker;
 
-import java.util.List;
-import java.util.UUID;
+import org.springframework.stereotype.Service;
 
-public class AssetServiceImpl implements AssetService{
+import java.util.List;
+
+@Service
+public class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
 
@@ -14,11 +16,16 @@ public class AssetServiceImpl implements AssetService{
     @Override
     public Asset findById(Long id) {
         // TODO throw not found runtime ex
-        return assetRepository.getById(id).orElse(null);
+        return assetRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<Asset> search(Long customerId) {
-        return assetRepository.findAssetsByCustomer_Id(customerId);
+    public List<Asset> search(Long customerId, String assetName) {
+        return assetRepository.findAssetsByCustomer_IdAndAndAssetName(customerId, assetName);
+    }
+
+    @Override
+    public boolean isAssetValid(Long assetId) {
+        return this.findById(assetId) != null;
     }
 }

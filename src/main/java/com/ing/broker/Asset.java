@@ -30,4 +30,8 @@ public class Asset {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    public boolean isUsableSizeEnough(float totalAmount) {
+        return this.getUsableSize() > totalAmount;
+    }
 }

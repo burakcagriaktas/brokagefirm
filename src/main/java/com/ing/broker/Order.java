@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -27,13 +28,14 @@ public class Order {
     private Side orderSide;
 
     @Column(name = "size")
-    private int size;
+    private float size;
 
     @Column(name = "price")
     private double price;
 
+    @Column(name = "status")
     private OrderStatus status;
 
     @Column(name = "creation_time")
-    private Date createDate;
+    private LocalDate createDate;
 }

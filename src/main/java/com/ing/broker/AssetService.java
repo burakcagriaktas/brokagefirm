@@ -7,5 +7,7 @@ public interface AssetService {
     Asset findById(Long id);
 
     // TODO add more filters
-    List<Asset> search(Long customerId);
+    List<Asset> search(Long customerId, String assetName);
+
+    boolean isAssetValid(Long assetId);
 }
