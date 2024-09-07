@@ -1,9 +1,16 @@
 package com.ing.broker;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,29 +62,35 @@ public class OrderServiceImpl implements OrderService {
         order.setSize(orderDTO.getSize());
         order.setPrice(orderDTO.getPrice());
         order.setStatus(OrderStatus.PENDING);
-        order.setCreateDate(LocalDate.now());
+        order.setCreateDate(LocalDateTime.now());
 
         return orderRepository.save(order);
     }
 
     @Override
     public List<Order> search(OrderSearchDTO orderSearchDTO) {
-        return null;
+        return orderRepository.search(
+                orderSearchDTO.getCustomerId(),
+                orderSearchDTO.getAsset(),
+                Side.find(orderSearchDTO.getSide()),
+                orderSearchDTO.getFrom(),
+                orderSearchDTO.getTo());
     }
 
     @Override
     public boolean delete(Long id) {
-        Optional<Order> toBeDeletedOrder = orderRepository.findById(id);
-        if (toBeDeletedOrder.isEmpty()) {
+        Optional<Order> toBeCancelledOrder = orderRepository.findById(id);
+        if (toBeCancelledOrder.isEmpty()) {
             // TODO throw not found exception rte
             return false;
         }
-        Order order = toBeDeletedOrder.get();
+        Order order = toBeCancelledOrder.get();
         if (!order.getStatus().equals(OrderStatus.PENDING)) {
             // TODO throw rte exception only pending orders can be deleted
             return false;
         }
-        orderRepository.delete(order);
+        order.setStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
         return true;
     }
 

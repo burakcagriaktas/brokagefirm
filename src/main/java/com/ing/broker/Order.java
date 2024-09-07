@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -25,6 +26,7 @@ public class Order {
     private String assetName;
 
     @Column(name = "order_side")
+    @Enumerated(EnumType.STRING)
     private Side orderSide;
 
     @Column(name = "size")
@@ -34,8 +36,9 @@ public class Order {
     private double price;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @Column(name = "creation_time")
-    private LocalDate createDate;
+    private LocalDateTime createDate;
 }

@@ -1,17 +1,17 @@
 package com.ing.broker;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public enum Side {
-    BUY("BUY"),
-    SELL("SELL");
+    BUY("BUY", "BUY"),
+    SELL("SELL", "SELL");
 
     public final String label;
+    public final String value;
 
-    Side(String label) {
-        this.label= label;
+    Side(String label, String value) {
+        this.label = label;
+        this.value = value;
     }
 
     public static boolean anyMatch(String otherSide) {
@@ -25,5 +25,10 @@ public enum Side {
                 .stream(values())
                 .filter(side -> side.label.equals(otherSide))
                 .toList().get(0);
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
     }
 }

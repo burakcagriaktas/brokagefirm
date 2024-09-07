@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("order")
 public class OrderController {
@@ -28,6 +30,15 @@ public class OrderController {
         return order != null ?
                 new ResponseEntity<Authenticator.Success>(HttpStatus.CREATED) :
                 new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(
+            value = "/list",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Order>> search(@RequestBody OrderSearchDTO orderSearchDTO) {
+        List<Order> orders = orderService.search(orderSearchDTO);
+        return ResponseEntity.ok(orders);
     }
 
     @DeleteMapping(
