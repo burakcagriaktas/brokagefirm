@@ -21,7 +21,12 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public List<Asset> search(Long customerId, String assetName) {
+    public List<Asset> search(Long customerId, String assetName, float smallerUsableSize, float biggerUsableSize) {
+        return assetRepository.search(customerId, assetName, smallerUsableSize, biggerUsableSize);
+    }
+
+    @Override
+    public List<Asset> findByCustomerIdAndAssetName(Long customerId, String assetName) {
         return assetRepository.findAssetsByCustomer_IdAndAndAssetName(customerId, assetName);
     }
 

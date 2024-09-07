@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "asset")
 public class AssetController {
@@ -47,5 +49,20 @@ public class AssetController {
         return success ?
                 new ResponseEntity<Authenticator.Success>(HttpStatus.OK) :
                 new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping(
+            value = "/search",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+public ResponseEntity<List<Asset>> search(@RequestBody AssetSearchDTO assetSearchDTO) {
+        List<Asset> assets = assetService.search(
+                assetSearchDTO.getCustomerId(),
+                assetSearchDTO.getAsset(),
+                assetSearchDTO.getSmallerUsableSize(),
+                assetSearchDTO.getBiggerUsableSize()
+        );
+        return ResponseEntity.ok(assets);
     }
 }

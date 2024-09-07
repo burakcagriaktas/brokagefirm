@@ -137,7 +137,7 @@ public class BrokerAppApplication {
             ));
             assetRepository.save(new Asset(
                     12L,
-                    "TR",
+                    "TRY",
                     100000000f,
                     75000000f,
                     customerRepository.findById(4L).get()

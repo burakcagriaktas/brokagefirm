@@ -38,7 +38,10 @@ public class OrderServiceImpl implements OrderService {
             return null;
         }
 
-        List<Asset> assetResults = assetService.search(orderDTO.getCustomerId(), orderDTO.getAsset());
+        List<Asset> assetResults = assetService.findByCustomerIdAndAssetName(
+                orderDTO.getCustomerId(),
+                orderDTO.getAsset()
+        );
         if (assetResults.isEmpty()) {
             // TODO throw customer not found exception
             return null;
@@ -47,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
             // TODO throw unsupported param rte
             return null;
         }
-        Asset asset = assetService.search(orderDTO.getCustomerId(), "TRY").get(0);
+        Asset asset = assetService.findByCustomerIdAndAssetName(orderDTO.getCustomerId(), "TRY").get(0);
         if (!asset.isUsableSizeEnough(calculateTotalSize(orderDTO))) {
             // TODO throw unsupported param rte
             return null;

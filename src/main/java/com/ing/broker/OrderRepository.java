@@ -1,18 +1,13 @@
 package com.ing.broker;
 
-import org.hibernate.annotations.ParamDef;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
     @Query("SELECT o FROM Order o WHERE (:customerId is null or o.customer.id = :customerId) " +
             "and (:asset is null or o.assetName = :asset) " +
             "and (:side is null or o.orderSide = :side) " +
