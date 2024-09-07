@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.assets;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;

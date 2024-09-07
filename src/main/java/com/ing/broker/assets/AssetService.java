@@ -1,7 +1,8 @@
-package com.ing.broker;
+package com.ing.broker.assets;
+
+import com.ing.broker.orders.Order;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface AssetService {
     Asset findById(Long id);
@@ -10,4 +11,5 @@ public interface AssetService {
     boolean depositMoney(Long customerId, float amount);
     boolean withdrawMoney(Long customerId, float amount, String IBAN);
     boolean isAssetValid(Long assetId);
+    void updateAssetBasedOnOrder(Order order);
 }

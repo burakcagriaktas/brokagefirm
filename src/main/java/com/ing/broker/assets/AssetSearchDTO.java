@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.assets;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

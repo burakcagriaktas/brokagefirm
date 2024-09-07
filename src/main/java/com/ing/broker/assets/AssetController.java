@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.assets;
 
 import com.sun.net.httpserver.Authenticator;
 import jakarta.validation.Valid;

@@ -1,5 +1,7 @@
-package com.ing.broker;
+package com.ing.broker.customers;
 
+import com.ing.broker.assets.Asset;
+import com.ing.broker.orders.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Getter

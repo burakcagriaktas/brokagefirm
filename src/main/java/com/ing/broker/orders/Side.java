@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.orders;
 
 import java.util.Arrays;
 

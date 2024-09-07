@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.customers;
 
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,9 @@
 package com.ing.broker;
 
+import com.ing.broker.assets.Asset;
+import com.ing.broker.assets.AssetRepository;
+import com.ing.broker.customers.Customer;
+import com.ing.broker.customers.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

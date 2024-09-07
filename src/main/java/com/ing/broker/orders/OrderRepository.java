@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.orders;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

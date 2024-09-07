@@ -1,5 +1,7 @@
-package com.ing.broker;
+package com.ing.broker.assets;
 
+import com.ing.broker.customers.CustomerService;
+import com.ing.broker.orders.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,7 +57,7 @@ public class AssetServiceImpl implements AssetService {
         Asset asset = this.assetRepository
                 .findAssetsByCustomer_IdAndAndAssetName(customerId, "TRY")
                 .get(0);
-        if (!asset.isUsableSizeEnough(amount)) {
+        if (asset.isUsableSizeEnough(amount)) {
             // TODO throw insufficient resources rte
             return false;
         }
@@ -69,5 +71,22 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public boolean isAssetValid(Long assetId) {
         return this.findById(assetId) != null;
+    }
+
+    @Override
+    public void updateAssetBasedOnOrder(Order order) {
+        Long customerId = order.getCustomer().getId();
+        float totalAmount = order.totalAmount();
+        String orderSide = order.getOrderSide().value;
+
+        Asset tryAsset = findByCustomerIdAndAssetName(customerId, "TRY").get(0);
+        tryAsset.setUsableSize(tryAsset.calculateNewUsableSize(orderSide, order.getSize(), totalAmount));
+        tryAsset.setSize(tryAsset.calculateNewSize(orderSide, order.getSize(), totalAmount));
+        assetRepository.save(tryAsset);
+
+        Asset updateAsset = findByCustomerIdAndAssetName(customerId, order.getAssetName()).get(0);
+        updateAsset.setUsableSize(updateAsset.calculateNewUsableSize(orderSide, order.getSize(), totalAmount));
+        updateAsset.setSize(updateAsset.calculateNewSize(orderSide, order.getSize(), totalAmount));
+        assetRepository.save(updateAsset);
     }
 }

@@ -1,4 +1,4 @@
-package com.ing.broker;
+package com.ing.broker.assets;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

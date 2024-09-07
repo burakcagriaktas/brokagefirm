@@ -1,5 +1,6 @@
-package com.ing.broker;
+package com.ing.broker.orders;
 
+import com.ing.broker.customers.Customer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,4 +42,16 @@ public class Order {
 
     @Column(name = "creation_time")
     private LocalDateTime createDate;
+
+    public boolean isPending() {
+        return this.status.equals(OrderStatus.PENDING);
+    }
+
+    public boolean isMatched() {
+        return this.status.equals(OrderStatus.MATCHED);
+    }
+
+    public float totalAmount() {
+        return (float) (this.getSize() * this.getPrice());
+    }
 }

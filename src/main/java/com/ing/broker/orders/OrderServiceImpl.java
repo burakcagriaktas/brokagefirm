@@ -1,19 +1,15 @@
-package com.ing.broker;
+package com.ing.broker.orders;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import org.aspectj.weaver.ast.Or;
+import com.ing.broker.customers.Customer;
+import com.ing.broker.customers.CustomerService;
+import com.ing.broker.assets.Asset;
+import com.ing.broker.assets.AssetService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -102,4 +98,35 @@ public class OrderServiceImpl implements OrderService {
         return orderDTO.getSize() * orderDTO.getPrice();
     }
 
+    @Override
+    public List<Order> getAllPendingOrders() {
+        return this.orderRepository.findAll()
+                .stream()
+                .filter(order -> order.getStatus() == OrderStatus.PENDING)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void match(List<OrderMatchDTO> matchList) {
+        List<Order> collect = matchList
+                .stream()
+                .filter(dto -> orderRepository.findById(dto.getId()).isPresent())
+                .toList()
+                .stream()
+                .map(dto -> {
+                    Optional<Order> orderOpt = orderRepository.findById(dto.getId());
+                    if (orderOpt.isPresent()) {
+                        Order order = orderOpt.get();
+                        order.setStatus(OrderStatus.find(dto.getStatus()));
+                        return order;
+                    }
+                    return null;
+                })
+                .toList();
+        orderRepository.saveAll(collect);
+
+        collect.stream()
+                .filter(Order::isMatched)
+                .forEach(assetService::updateAssetBasedOnOrder);
+    }
 }
