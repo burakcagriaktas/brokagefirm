@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
             // TODO throw unsupported param rte
             return null;
         }
-        Asset asset = assetService.search(orderDTO.getCustomerId(), orderDTO.getAsset()).get(0);
+        Asset asset = assetService.search(orderDTO.getCustomerId(), "TRY").get(0);
         if (!asset.isUsableSizeEnough(calculateTotalSize(orderDTO))) {
             // TODO throw unsupported param rte
             return null;
@@ -67,7 +67,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean delete(Long id) {
-        return false;
+        Optional<Order> toBeDeletedOrder = orderRepository.findById(id);
+        if (toBeDeletedOrder.isEmpty()) {
+            // TODO throw not found exception rte
+            return false;
+        }
+        Order order = toBeDeletedOrder.get();
+        if (!order.getStatus().equals(OrderStatus.PENDING)) {
+            // TODO throw rte exception only pending orders can be deleted
+            return false;
+        }
+        orderRepository.delete(order);
+        return true;
     }
 
     @Override

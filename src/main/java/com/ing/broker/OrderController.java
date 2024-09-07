@@ -5,10 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("order")
@@ -31,5 +28,14 @@ public class OrderController {
         return order != null ?
                 new ResponseEntity<Authenticator.Success>(HttpStatus.CREATED) :
                 new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @DeleteMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Boolean> delete(@PathVariable("id") Long id) {
+        boolean deleted = orderService.delete(id);
+        return ResponseEntity.ok(deleted);
     }
 }

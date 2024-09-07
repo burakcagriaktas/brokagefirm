@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Collections;
-import java.util.UUID;
 
 @SpringBootApplication
 public class BrokerAppApplication {
@@ -14,10 +13,11 @@ public class BrokerAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(BrokerAppApplication.class, args);
     }
+
     @Bean
     public CommandLineRunner saveInitialData(CustomerRepository customerRepository, AssetRepository assetRepository) {
         return args -> {
-
+            // region Customers
             customerRepository.save(new Customer(
                     1L,
                     "Warren",
@@ -25,7 +25,6 @@ public class BrokerAppApplication {
                     Collections.emptySet(),
                     Collections.emptySet()
             ));
-
             customerRepository.save(new Customer(
                     2L,
                     "George",
@@ -47,7 +46,9 @@ public class BrokerAppApplication {
                     Collections.emptySet(),
                     Collections.emptySet()
             ));
+            // endregion Customers
 
+            // region Customer 1 assets
             assetRepository.save(new Asset(
                     1L,
                     "TRY",
@@ -69,7 +70,9 @@ public class BrokerAppApplication {
                     50f,
                     customerRepository.findById(1L).get()
             ));
+            // endregion Customer 1 assets
 
+            // region Customer 2 assets
             assetRepository.save(new Asset(
                     4L,
                     "TRY",
@@ -84,7 +87,9 @@ public class BrokerAppApplication {
                     129178.88f,
                     customerRepository.findById(2L).get()
             ));
+            // endregion Customer 2 assets
 
+            // region Customer 3 assets
             assetRepository.save(new Asset(
                     6L,
                     "TRY",
@@ -106,7 +111,9 @@ public class BrokerAppApplication {
                     35f,
                     customerRepository.findById(3L).get()
             ));
+            // endregion Customer 3 assets
 
+            // region Customer 4 assets
             assetRepository.save(new Asset(
                     9L,
                     "DOLLAR",
@@ -116,11 +123,26 @@ public class BrokerAppApplication {
             ));
             assetRepository.save(new Asset(
                     10L,
+                    "AKBNK",
+                    1000f,
+                    900f,
+                    customerRepository.findById(4L).get()
+            ));
+            assetRepository.save(new Asset(
+                    11L,
                     "EURO",
                     10000000f,
                     350000f,
                     customerRepository.findById(4L).get()
             ));
+            assetRepository.save(new Asset(
+                    12L,
+                    "TR",
+                    100000000f,
+                    75000000f,
+                    customerRepository.findById(4L).get()
+            ));
+            // endregion Customer 4 assets
         };
     }
 }

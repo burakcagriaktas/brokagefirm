@@ -16,7 +16,6 @@ public class OrderDTO {
     private Long customerId;
 
     @NotBlank(message = "Asset is empty!")
-    @Pattern(regexp = "TRY", message = "You can only BUY|SELL with TRY!")
     private String asset;
 
     @NotBlank(message = "Side is empty!")
