@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
+import java.util.StringJoiner;
 
 @Entity
 @Getter
@@ -33,4 +34,9 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer")
     private Set<Order> orders;
+
+    public String getFullName () {
+        StringJoiner sj = new StringJoiner(" ");
+        return sj.add(this.name).add(this.surname).toString();
+    }
 }

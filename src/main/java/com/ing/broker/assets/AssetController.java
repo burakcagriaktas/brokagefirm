@@ -27,28 +27,21 @@ public class AssetController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> deposit(@Valid @RequestBody AssetWithdrawDepositDTO requestDTO) {
-        // TODO add global exception and advice controller
-        boolean success = assetService.depositMoney(
-                requestDTO.getCustomerId(),
-                requestDTO.getAmount());
-        return success ?
-                new ResponseEntity<Authenticator.Success>(HttpStatus.OK) :
-                new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+        assetService.depositMoney(requestDTO.getCustomerId(), requestDTO.getAmount());
+        return new ResponseEntity<Authenticator.Success>(HttpStatus.OK);
     }
+
     @PostMapping(
             value = "/withdraw",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> withdraw(@Valid @RequestBody AssetWithdrawDepositDTO requestDTO) {
-        // TODO add global exception and advice controller
-        boolean success = assetService.withdrawMoney(
+        assetService.withdrawMoney(
                 requestDTO.getCustomerId(),
                 requestDTO.getAmount(),
                 requestDTO.getIBAN());
-        return success ?
-                new ResponseEntity<Authenticator.Success>(HttpStatus.OK) :
-                new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<Authenticator.Success>(HttpStatus.OK);
     }
 
     @PostMapping(
@@ -56,7 +49,7 @@ public class AssetController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-public ResponseEntity<List<Asset>> search(@RequestBody AssetSearchDTO assetSearchDTO) {
+    public ResponseEntity<List<Asset>> search(@RequestBody AssetSearchDTO assetSearchDTO) {
         List<Asset> assets = assetService.search(
                 assetSearchDTO.getCustomerId(),
                 assetSearchDTO.getAsset(),

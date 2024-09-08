@@ -54,4 +54,14 @@ public class Order {
     public float totalAmount() {
         return (float) (this.getSize() * this.getPrice());
     }
+
+    public String getOrderInfo() {
+        return String.format("Asset: %s with amount: %s * %s for customer: %s on date: %s",
+                this.assetName,
+                this.size,
+                this.price,
+                this.customer.getFullName(),
+                this.createDate);
+
+    }
 }

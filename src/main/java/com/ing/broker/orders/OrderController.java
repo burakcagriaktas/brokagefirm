@@ -14,21 +14,21 @@ import java.util.List;
 @RequestMapping("order")
 public class OrderController {
     private final OrderService orderService;
+
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
+
     @PostMapping(
             value = "/new",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> create(@Valid @RequestBody OrderDTO orderDTO) {
-        Order order = orderService.create(orderDTO);
-        // TODO add global exception and advice controller
-        return order != null ?
-                new ResponseEntity<Authenticator.Success>(HttpStatus.CREATED) :
-                new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+        orderService.create(orderDTO);
+        return new ResponseEntity<Authenticator.Success>(HttpStatus.CREATED);
     }
+
     @PostMapping(
             value = "/list",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -37,14 +37,15 @@ public class OrderController {
         List<Order> orders = orderService.search(orderSearchDTO);
         return ResponseEntity.ok(orders);
     }
+
     @DeleteMapping(
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Boolean> delete(@PathVariable("id") Long id) {
-        boolean deleted = orderService.delete(id);
-        return ResponseEntity.ok(deleted);
+        return ResponseEntity.ok(orderService.delete(id));
     }
+
     @GetMapping(
             value = "/all-pending",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -52,13 +53,13 @@ public class OrderController {
     public ResponseEntity<List<Order>> getAllPendingOrders() {
         return ResponseEntity.ok(this.orderService.getAllPendingOrders());
     }
+
     @PostMapping(
             value = "/match",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<Order>> match(@RequestBody List<OrderMatchDTO> matchList) {
-        this.orderService.match(matchList);
-        return ResponseEntity.ok(new ArrayList<>());
+        return ResponseEntity.ok(this.orderService.match(matchList));
     }
 }

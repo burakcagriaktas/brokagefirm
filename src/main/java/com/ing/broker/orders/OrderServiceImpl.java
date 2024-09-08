@@ -1,10 +1,11 @@
 package com.ing.broker.orders;
 
+import com.ing.broker.assets.AssetService;
 import com.ing.broker.customers.Customer;
 import com.ing.broker.customers.CustomerService;
-import com.ing.broker.assets.Asset;
-import com.ing.broker.assets.AssetService;
+import com.ing.broker.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,36 +27,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order create(OrderDTO orderDTO) {
+        Customer customer = customerService.findOne(orderDTO.getCustomerId());
 
-        Customer customer;
-        if (!customerService.isCustomerExist(orderDTO.getCustomerId())) {
-            // TODO throw customer not found rte
-            return null;
-        }
-
-        List<Asset> assetResults = assetService.findByCustomerIdAndAssetName(
-                orderDTO.getCustomerId(),
-                orderDTO.getAsset()
-        );
-        if (assetResults.isEmpty()) {
-            // TODO throw customer not found exception
-            return null;
-        }
         if (!Side.anyMatch(orderDTO.getSide())) {
-            // TODO throw unsupported param rte
-            return null;
+            throw new NotFoundException(String.format("Order side : %s does not exist", orderDTO.getSide()));
         }
-        Asset asset = assetService.findByCustomerIdAndAssetName(orderDTO.getCustomerId(), "TRY").get(0);
-        if (!asset.isUsableSizeEnough(calculateTotalSize(orderDTO))) {
-            // TODO throw unsupported param rte
-            return null;
-        }
-
-        // make asset update transactional if order is unsuccessful then asset should not be updated
 
         Order order = new Order();
-        order.setCustomer(customerService.findOne(orderDTO.getCustomerId()));
+        order.setCustomer(customer);
         order.setAssetName(orderDTO.getAsset());
         order.setOrderSide(Side.find(orderDTO.getSide()));
         order.setSize(orderDTO.getSize());
@@ -63,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.PENDING);
         order.setCreateDate(LocalDateTime.now());
 
+        assetService.updateTRYAssetBasedOnOrder(order);
         return orderRepository.save(order);
     }
 
@@ -78,17 +60,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean delete(Long id) {
-        Optional<Order> toBeCancelledOrder = orderRepository.findById(id);
-        if (toBeCancelledOrder.isEmpty()) {
-            // TODO throw not found exception rte
-            return false;
-        }
-        Order order = toBeCancelledOrder.get();
+        Order order = getOrder(id);
         if (!order.getStatus().equals(OrderStatus.PENDING)) {
-            // TODO throw rte exception only pending orders can be deleted
-            return false;
+            throw new RuntimeException(String.format(
+                    "Orders: %s that are not in %s status cannot be cancelled",
+                    order.getOrderInfo(),
+                    order.getStatus()));
         }
         order.setStatus(OrderStatus.CANCELED);
+
+        assetService.updateAssetBasedOnOrder(order);
         orderRepository.save(order);
         return true;
     }
@@ -107,10 +88,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void match(List<OrderMatchDTO> matchList) {
+    public List<Order> match(List<OrderMatchDTO> matchList) {
         List<Order> collect = matchList
                 .stream()
-                .filter(dto -> orderRepository.findById(dto.getId()).isPresent())
+                .filter(dto -> {
+                    Optional<Order> orderOpt = orderRepository.findById(dto.getId());
+                    return orderOpt.isPresent() && orderOpt.get().isPending();
+                })
                 .toList()
                 .stream()
                 .map(dto -> {
@@ -123,10 +107,19 @@ public class OrderServiceImpl implements OrderService {
                     return null;
                 })
                 .toList();
-        orderRepository.saveAll(collect);
+        List<Order> matchedOrders = orderRepository.saveAll(collect);
 
         collect.stream()
                 .filter(Order::isMatched)
                 .forEach(assetService::updateAssetBasedOnOrder);
+        return matchedOrders;
+    }
+
+    private Order getOrder(Long id) {
+        Optional<Order> toBeCancelledOrder = orderRepository.findById(id);
+        if (toBeCancelledOrder.isEmpty()) {
+            throw new NotFoundException("Order: not found");
+        }
+        return toBeCancelledOrder.get();
     }
 }

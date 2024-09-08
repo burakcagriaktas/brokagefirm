@@ -1,5 +1,6 @@
 package com.ing.broker.customers;
 
+import com.ing.broker.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,12 +16,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findOne(Long id) {
         Optional<Customer> customerOpt = customerRepository.findById(id);
-        // TODO throw customer not found rte
-        return customerOpt.orElse(null);
-    }
-
-    @Override
-    public boolean isCustomerExist(Long id) {
-        return findOne(id) != null;
+        return customerOpt.orElseThrow(() -> new NotFoundException(String.format(
+                "Customer: %s is not found!", id
+        )));
     }
 }

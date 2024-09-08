@@ -10,5 +10,5 @@ public interface OrderService {
 
     List<Order> getAllPendingOrders();
 
-    void match(List<OrderMatchDTO> matchList);
+    List<Order> match(List<OrderMatchDTO> matchList);
 }
